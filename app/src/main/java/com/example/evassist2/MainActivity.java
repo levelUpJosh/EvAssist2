@@ -1,5 +1,6 @@
 package com.example.evassist2;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -22,6 +23,7 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
+
     BottomNavigationView bottomNavigationView;
 
     @Override
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
 
     }
+
     GuideFragment GuideFragment = new GuideFragment();
     NewsFragment NewsFragment = new NewsFragment();
     ChargingFragment ChargingFragment = new ChargingFragment();
@@ -49,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         switch (item.getItemId()) {
             case R.id.guideFragment:
+
                 getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment, GuideFragment).commit();
                 return true;
 

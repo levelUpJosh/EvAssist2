@@ -8,4 +8,8 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="guide_fragment">Hello guide fragment</string>
+    <string name="guide_todays_tips">Today\'s Tips</string>
+    <string name="guide_charging">Charging</string>
+    <string name="guide_batteryrange">Battery &amp; Range</string>
+    <string name="guide_vehicle">Vehicle Specific Guides</string>
 </resources>

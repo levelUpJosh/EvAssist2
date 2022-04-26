@@ -1,4 +1,4 @@
-package com.example.evassist2;
+package com.lborof028685.evassist2;
 /*
  * Copyright (C) 2019-2022 HERE Europe B.V.
  *

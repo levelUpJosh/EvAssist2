@@ -1,4 +1,4 @@
-package com.example.evassist2;
+package com.lborof028685.evassist2;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.example.evassist2", appContext.getPackageName());
+        assertEquals("com.lborof028685.evassist2", appContext.getPackageName());
     }
 }

@@ -1,4 +1,4 @@
-package com.example.evassist2;
+package com.lborof028685.evassist2;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class GuideActivity extends AppCompatActivity {
@@ -18,6 +17,7 @@ public class GuideActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guide);
 
+        startActivity(new Intent(getApplicationContext(),FirebaseLoginUIActivity.class));
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
 

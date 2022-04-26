@@ -1,4 +1,4 @@
-package com.example.evassist2;
+package com.lborof028685.evassist2;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 
-import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.here.sdk.core.GeoCoordinates;
 import com.here.sdk.mapview.MapError;
@@ -20,7 +19,7 @@ import com.here.sdk.mapview.VisibilityState;
 
 public class ChargingActivity extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
-    private static final String TAG = GuideActivity.class.getSimpleName();
+    private static String TAG = GuideActivity.class.getSimpleName();
     private PermissionsRequestor permissionsRequestor;
     private MapView mapView;
 
@@ -43,11 +42,11 @@ public class ChargingActivity extends AppCompatActivity {
                         overridePendingTransition(0, 0);
                         return true;
                     case R.id.chargingSelector:
-                        startActivity(new Intent(getApplicationContext(), ChargingActivity.class));
-                        overridePendingTransition(0, 0);
+
                         return true;
                     case R.id.newsSelector:
-
+                        startActivity(new Intent(getApplicationContext(), NewsActivity.class));
+                        overridePendingTransition(0, 0);
                         return true;
                 }
                 return false;

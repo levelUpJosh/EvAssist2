@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.evassist2">
+    package="com.lborof028685.evassist2">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -12,22 +12,32 @@
         android:required="true" />
 
     <permission
-        android:name="com.example.permission.MAPS_RECEIVE"
+        android:name="com.lborof028685.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
 
-    <uses-permission android:name="com.example.permission.MAPS_RECEIVE" />
+    <uses-permission android:name="com.lborof028685.permission.MAPS_RECEIVE" />
 
     <application
+        android:name=".CustomApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.EvAssist2">
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".EmailPasswordActivity"
+            android:exported="false" />
         <activity
             android:name=".NewsActivity"
             android:exported="false" />
-
+        <activity
+            android:name=".ArticleFragment"
+            android:exported="false"
+            android:parentActivityName=".NewsActivity" />
+        <activity
+            android:name=".FirebaseLoginUIActivity"
+            android:exported="false" />
         <activity
             android:name=".ChargingActivity"
             android:exported="false" />

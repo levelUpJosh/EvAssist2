@@ -1,12 +1,13 @@
 plugins {
     id 'com.android.application'
+    id 'com.google.gms.google-services'
 }
 
 android {
     compileSdk 31
 
     defaultConfig {
-        applicationId "com.example.evassist2"
+        applicationId "com.lborof028685.evassist2"
         minSdk 26
         targetSdk 31
         versionCode 1
@@ -52,5 +53,26 @@ dependencies {
 
     implementation 'com.google.android.material:material:1.5.0'
     implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+
+    // Import the Firebase BoM
+    implementation platform('com.google.firebase:firebase-bom:29.3.1')
+
+
+    // Add the dependency for the Firebase SDK for Google Analytics
+    // When using the BoM, don't specify versions in Firebase dependencies
+    implementation 'com.google.firebase:firebase-analytics'
+
+
+    // Add the dependencies for any other desired Firebase products
+    // https://firebase.google.com/docs/android/setup#available-libraries
+
+    implementation 'com.firebaseui:firebase-ui-auth:7.2.0'
+
+    // Declare the dependency for the Firebase Authentication library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation 'com.google.firebase:firebase-auth'
+
+    // Also declare the dependency for the Google Play services library and specify its version
+    implementation 'com.google.android.gms:play-services-auth:20.1.0'
 
 }

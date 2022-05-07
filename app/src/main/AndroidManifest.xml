@@ -26,7 +26,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".EmailPasswordActivity"
+            android:name=".ChargingStationActivity"
+            android:exported="false"
+            android:parentActivityName=".ChargingActivity"/>
+        <activity
+            android:name=".RegisterUserActivity"
             android:exported="false" />
         <activity
             android:name=".NewsActivity"
@@ -36,11 +40,9 @@
             android:exported="false"
             android:parentActivityName=".NewsActivity" />
         <activity
-            android:name=".FirebaseLoginUIActivity"
-            android:exported="false" />
-        <activity
             android:name=".ChargingActivity"
             android:exported="false" />
+
 
         <meta-data
             android:name="com.here.sdk.access_key_id"

@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -70,8 +71,8 @@ public class NewsActivity extends AppCompatActivity {
         lvRss.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Intent intent = new Intent(getApplicationContext(),ArticleFragment.class);
-                intent.putExtra("articleLink",articles.get(position).getLink());
+                Uri webpage = Uri.parse(articles.get(position).getLink());
+                Intent intent = new Intent(Intent.ACTION_VIEW,webpage);
                 startActivity(intent);
 
             }

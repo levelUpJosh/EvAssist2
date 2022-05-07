@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "482288977569",
+    "project_id": "ev-assistant-3d3e4",
+    "storage_bucket": "ev-assistant-3d3e4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:482288977569:android:4ae334aefc377a387a52e0",
+        "android_client_info": {
+          "package_name": "com.lborof028685.evassist2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "482288977569-n4al4anejvags21hup21neiutkf6ibb6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lborof028685.evassist2",
+            "certificate_hash": "2e8e0bfa32880e90363d5fe5fef142e38656a15c"
+          }
+        },
+        {
+          "client_id": "482288977569-peme37k16rp9o0q84tae36qeqe2e79ds.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCD5jBhuXkc95ZXls3vFWxaZOrqEU9d4BM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "482288977569-peme37k16rp9o0q84tae36qeqe2e79ds.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -55,6 +55,7 @@ public class GuideActivity extends AppCompatActivity {
                                 //Log.d(TAG, "signInAnonymously:success");
                                 user = auth.getCurrentUser();
 
+
                             } else {
                                 // If sign in fails, display a message to the user.
                                 //Log.w(TAG, "signInAnonymously:failure", task.getException());

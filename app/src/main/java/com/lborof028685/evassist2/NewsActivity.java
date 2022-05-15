@@ -76,11 +76,13 @@ public class NewsActivity extends AppCompatActivity {
         lvRss.setOnItemLongClickListener((parent, view, position, id) -> {
             // Open the android sharesheet when a list item is long pressed
             Uri webpage = Uri.parse(articles.get(position).getLink());
-            Intent shareIntent = new Intent();
-            shareIntent.setAction(Intent.ACTION_SEND);
-            shareIntent.putExtra(Intent.EXTRA_STREAM, webpage);
-            shareIntent.setType("text/html");
-            startActivity(Intent.createChooser(shareIntent, "Share this article link"));
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+
+            shareIntent.putExtra(Intent.EXTRA_TEXT, articles.get(position).getLink());
+            shareIntent.setType("text/plain");
+            // (Optional) Here we're setting the title of the content
+            shareIntent.putExtra(Intent.EXTRA_TITLE, articles.get(position).getTitle());
+            startActivity(Intent.createChooser(shareIntent, null));
             return true;
         });
 

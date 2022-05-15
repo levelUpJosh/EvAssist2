@@ -121,7 +121,7 @@ public class ChargingStationActivity extends AppCompatActivity {
                     hereBtn.setChecked(false);
                     // find out if the user is allowed to be here (ie they aren't anywhere else already)
                     if (user != null){
-                        DatabaseReference userRef = database.getReference("charging/users/").child(user.getUid());
+                        DatabaseReference userRef = database.getReference("charging/stations/"+stationID);
 
                     }
 
@@ -136,12 +136,15 @@ public class ChargingStationActivity extends AppCompatActivity {
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                         if(isChecked)
                         {
-                            // attempt to add them to the station
-                            DatabaseReference userIsInAQueue = database.getReference("/charging/users/").child(user.getUid()).child("isInAQueue");
-                            userIsInAQueue.addListenerForSingleValueEvent(new ValueEventListener() {
+                            ref.child("numAvailable").addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    snapshot.getValue(boolean.class);
+                                    Integer number = snapshot.getValue(Integer.class);
+                                    if (number > 0) {
+                                        ref.child("numAvailable").setValue(snapshot.getValue(Integer.class)-1);
+                                    } else {
+                                        hereBtn.setEnabled(false);
+                                    }
                                 }
 
                                 @Override
@@ -152,7 +155,17 @@ public class ChargingStationActivity extends AppCompatActivity {
                         }
                         else
                         {
+                            ref.child("numAvailable").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    ref.child("numAvailable").setValue(snapshot.getValue(Integer.class)+1);
+                                }
 
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
                         }
 
                     }

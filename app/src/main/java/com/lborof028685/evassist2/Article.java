@@ -1,5 +1,7 @@
 package com.lborof028685.evassist2;
 
+import android.net.Uri;
+
 import java.util.Date;
 
 public class Article {
@@ -8,6 +10,7 @@ public class Article {
     Date datePosted;
     String description;
     String operator;
+    Uri webIcon;
 
     public Article() {
     }
@@ -46,5 +49,21 @@ public class Article {
     }
     public String getOperator() {
         return this.operator;
+    }
+
+    public Date getDatePosted() {
+        return datePosted;
+    }
+
+    public void setDatePosted(Date datePosted) {
+        this.datePosted = datePosted;
+    }
+
+    public Uri getWebIcon() {
+        return webIcon;
+    }
+
+    public void setWebIcon(Uri webIcon) {
+        this.webIcon = webIcon;
     }
 }

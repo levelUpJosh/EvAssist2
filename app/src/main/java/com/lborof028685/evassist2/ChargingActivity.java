@@ -220,6 +220,10 @@ public class ChargingActivity extends AppCompatActivity implements GoogleMap.OnM
                         startActivity(new Intent(getApplicationContext(), NewsActivity.class));
                         overridePendingTransition(0, 0);
                         return true;
+                    case R.id.settingSelector:
+                        startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                        overridePendingTransition(0, 0);
+                        return true;
                 }
                 return false;
             }

@@ -26,9 +26,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".SettingsActivity"
+            android:exported="false"
+            android:label="@string/title_activity_settings" />
+        <activity
             android:name=".ChargingStationActivity"
             android:exported="false"
-            android:parentActivityName=".ChargingActivity"/>
+            android:parentActivityName=".ChargingActivity" />
         <activity
             android:name=".RegisterUserActivity"
             android:exported="false" />
@@ -42,7 +46,6 @@
         <activity
             android:name=".ChargingActivity"
             android:exported="false" />
-
 
         <meta-data
             android:name="com.here.sdk.access_key_id"

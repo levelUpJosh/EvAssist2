@@ -4,17 +4,22 @@
             android:id="@+id/guideSelector"
             android:enabled="true"
             android:icon="@drawable/ic_baseline_menu_book_24"
-            android:title="@string/nav_menu_label_1"/>
+            android:title="@string/nav_menu_label_guides"/>
         <item
             android:id="@+id/chargingSelector"
             android:enabled="true"
             android:icon="@drawable/ic_baseline_battery_charging_full_24"
-            android:title="@string/nav_menu_label_2"/>
+            android:title="@string/nav_menu_label_charging"/>
         <item
             android:id="@+id/newsSelector"
             android:enabled="true"
             android:icon="@drawable/ic_baseline_news_24"
-            android:title="@string/nav_menu_label_3"/>
+            android:title="@string/nav_menu_label_news"/>
+        <item
+            android:id="@+id/settingSelector"
+            android:enabled="true"
+            android:icon="@drawable/ic_baseline_settings_24"
+            android:title="@string/nav_menu_label_settings"/>
 
 
 

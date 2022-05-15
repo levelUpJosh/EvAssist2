@@ -1,0 +1,23 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory app:title="Account">
+
+        <Preference
+            android:title="Log In"
+            android:key="loginOutBtn"
+            android:summary="Tap to log in"
+            />
+
+        <ListPreference
+            app:entries="@array/car_models"
+            app:entryValues="@array/car_values"
+            app:key="reply"
+            app:title="Car Model"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+
+
+</PreferenceScreen>

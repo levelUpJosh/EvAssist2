@@ -1,34 +1,39 @@
 package com.lborof028685.evassist2;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
+import static android.content.ContentValues.TAG;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.w3c.dom.Text;
-
 import java.util.HashMap;
 
 public class ChargingStationActivity extends AppCompatActivity {
     FirebaseDatabase database = FirebaseDatabase.getInstance("https://ev-assistant-3d3e4-default-rtdb.europe-west1.firebasedatabase.app/");
     DatabaseReference ref = database.getReference("charging/stations");
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    Integer stationID;
 
     ValueEventListener availableListener = new ValueEventListener() {
         @Override
@@ -94,7 +99,7 @@ public class ChargingStationActivity extends AppCompatActivity {
 
         // get the station info from the intent:
         Intent intent = getIntent();
-        int stationID = intent.getIntExtra("stationID",0);
+        stationID = intent.getIntExtra("stationID",0);
 
         // if 0 then end the activity (default, no data):
         if (stationID == 0) {
@@ -103,12 +108,72 @@ public class ChargingStationActivity extends AppCompatActivity {
 
         // else continue
 
+        // get the station
         ref = ref.child(String.valueOf(stationID));
+
+        //lets check if the station has this user's UUID
+        ValueEventListener eventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ToggleButton hereBtn = findViewById(R.id.hereBtn);
+                if(!dataSnapshot.exists()) {
+                    // The user isn't marked as being "at the station"
+                    hereBtn.setChecked(false);
+                    // find out if the user is allowed to be here (ie they aren't anywhere else already)
+                    if (user != null){
+                        DatabaseReference userRef = database.getReference("charging/users/").child(user.getUid());
+
+                    }
+
+
+                } else {
+                    // The user is marked as at the station currently
+                    hereBtn.setChecked(true);
+                }
+                hereBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        if(isChecked)
+                        {
+                            // attempt to add them to the station
+                            DatabaseReference userIsInAQueue = database.getReference("/charging/users/").child(user.getUid()).child("isInAQueue");
+                            userIsInAQueue.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    snapshot.getValue(boolean.class);
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+                        }
+                        else
+                        {
+
+                        }
+
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, databaseError.getMessage()); //Don't ignore errors!
+            }
+        };
+        if (user != null){
+            ref.child("currentUsers").child(user.getUid()).addListenerForSingleValueEvent(eventListener);
+        }
+
         ref.child("numAvailable").addValueEventListener(availableListener);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                     //String keys = dataSnaps.getKey();
+
 
                     HashMap<String, Double> data = (HashMap<String, Double>) snapshot.child("coords").getValue();
                     double latitude = data.get("latitude");
@@ -127,8 +192,10 @@ public class ChargingStationActivity extends AppCompatActivity {
 
                     String fullName = network+" "+name;
 
+                    if (user!= null) {
+                        actionBar.setTitle(user.getDisplayName());
+                    }
 
-                    actionBar.setTitle(fullName);
                     ColorDrawable actionBarColor = new ColorDrawable(Color.parseColor("#c876f5"));
                     switch (network){
                         case "Instavolt":

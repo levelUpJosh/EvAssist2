@@ -1,18 +1,15 @@
 package com.lborof028685.evassist2;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -42,24 +39,25 @@ public class NewsActivity extends AppCompatActivity {
 
         bottomNavigationView.setSelectedItemId(R.id.newsSelector);
 
-        bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.guideSelector:
-                        startActivity(new Intent(getApplicationContext(), GuideActivity.class));
-                        overridePendingTransition(0, 0);
-                        return true;
-                    case R.id.chargingSelector:
-                        startActivity(new Intent(getApplicationContext(), ChargingActivity.class));
-                        overridePendingTransition(0, 0);
-                        return true;
-                    case R.id.newsSelector:
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.guideSelector:
+                    startActivity(new Intent(getApplicationContext(), GuideActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                case R.id.chargingSelector:
+                    startActivity(new Intent(getApplicationContext(), ChargingActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                case R.id.newsSelector:
 
-                        return true;
-                }
-                return false;
+                    return true;
+                case R.id.settingSelector:
+                    startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
             }
+            return false;
         });
 
 
@@ -68,15 +66,24 @@ public class NewsActivity extends AppCompatActivity {
         articles = new ArticleList();
 
 
-        lvRss.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Uri webpage = Uri.parse(articles.get(position).getLink());
-                Intent intent = new Intent(Intent.ACTION_VIEW,webpage);
-                startActivity(intent);
+        lvRss.setOnItemClickListener((adapterView, view, position, id) -> {
+            Uri webpage = Uri.parse(articles.get(position).getLink());
+            Intent intent = new Intent(Intent.ACTION_VIEW,webpage);
+            startActivity(intent);
 
-            }
         });
+        lvRss.setLongClickable(true);
+        lvRss.setOnItemLongClickListener((parent, view, position, id) -> {
+            // Open the android sharesheet when a list item is long pressed
+            Uri webpage = Uri.parse(articles.get(position).getLink());
+            Intent shareIntent = new Intent();
+            shareIntent.setAction(Intent.ACTION_SEND);
+            shareIntent.putExtra(Intent.EXTRA_STREAM, webpage);
+            shareIntent.setType("text/html");
+            startActivity(Intent.createChooser(shareIntent, "Share this article link"));
+            return true;
+        });
+
 
         new ProcessInBackground("https://www.gridserve.com/feed/").execute();
 

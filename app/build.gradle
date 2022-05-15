@@ -31,6 +31,7 @@ android {
             enable true
         }
     }
+    namespace 'com.lborof028685.evassist2'
 }
 
 dependencies {

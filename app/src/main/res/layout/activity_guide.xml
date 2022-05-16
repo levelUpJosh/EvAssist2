@@ -7,128 +7,22 @@
     tools:context=".GuideActivity"
     android:id="@+id/frameLayout">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/materialCardView5"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:clickable="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_conversion_absoluteHeight="77dp"
-        tools:layout_conversion_absoluteWidth="411dp">
+    <RelativeLayout
+        android:id="@+id/loadingPanel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center" >
 
-
-        <TextView
+        <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/guide_todays_tips"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:textSize="34sp"
-            tools:layout_conversion_absoluteHeight="45dp"
-            tools:layout_conversion_absoluteWidth="187dp"
-            tools:layout_editor_absoluteX="16dp"
-            tools:layout_editor_absoluteY="16dp" />
-
-
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/materialCardView6"
-        android:layout_width="0dp"
+            android:indeterminate="true" />
+    </RelativeLayout>
+    <ListView
+        android:id="@+id/guideList"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:clickable="true"
-        android:translationY="100dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/materialCardView5"
-        tools:layout_conversion_absoluteHeight="77dp"
-        tools:layout_conversion_absoluteWidth="411dp">
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/guide_charging"
-            android:textAlignment="center"
-            android:textAppearance="?attr/textAppearanceTitleMedium"
-            android:textSize="34sp"
-            tools:layout_conversion_absoluteHeight="45dp"
-            tools:layout_conversion_absoluteWidth="136dp"
-            tools:layout_editor_absoluteX="16dp"
-            tools:layout_editor_absoluteY="116dp" />
-
-
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/materialCardView7"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:clickable="true"
-        android:translationY="200dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/materialCardView6"
-        tools:layout_conversion_absoluteHeight="77dp"
-        tools:layout_conversion_absoluteWidth="411dp">
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/guide_batteryrange"
-            android:textAlignment="center"
-            android:textAppearance="?attr/textAppearanceTitleMedium"
-            android:textSize="34sp"
-            tools:layout_conversion_absoluteHeight="45dp"
-            tools:layout_conversion_absoluteWidth="240dp"
-            tools:layout_editor_absoluteX="16dp"
-            tools:layout_editor_absoluteY="216dp" />
-
-
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:clickable="true"
-        android:translationY="300dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/materialCardView7"
-        tools:layout_conversion_absoluteHeight="77dp"
-        tools:layout_conversion_absoluteWidth="411dp">
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/guide_vehicle"
-            android:textAlignment="center"
-            android:textAppearance="?attr/textAppearanceTitleMedium"
-            android:textSize="34sp"
-            tools:layout_conversion_absoluteHeight="45dp"
-            tools:layout_conversion_absoluteWidth="352dp"
-            tools:layout_editor_absoluteX="16dp"
-            tools:layout_editor_absoluteY="316dp" />
-
-
-    </com.google.android.material.card.MaterialCardView>
+        android:dividerHeight="1dp" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"

@@ -39,7 +39,7 @@
             android:name=".NewsActivity"
             android:exported="false" />
         <activity
-            android:name=".ArticleFragment"
+            android:name=".WebViewActivity"
             android:exported="false"
             android:parentActivityName=".NewsActivity" />
         <activity
@@ -65,8 +65,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <provider android:name=".TipsProvider"
-            android:authorities="com.lborof028685.evassist2.TipsProvider"/>
+
+        <provider
+            android:name="com.lborof028685.evassist2.data.TipProvider"
+            android:authorities="com.lborof028685.evassist2"
+            android:enabled="true"
+            android:exported="true"></provider>
     </application>
 
 </manifest>

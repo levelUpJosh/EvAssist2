@@ -150,6 +150,15 @@ public class SettingsActivity extends AppCompatActivity {
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
             setAccountBtn();
+            Preference button = findPreference("userGuideBtn");
+            button.setOnPreferenceClickListener(preference -> {
+                //code for what you want it to do
+                // create intent
+                Intent intent = new Intent(getActivity(), WebViewActivity.class);
+                intent.putExtra("link","file:///android_asset/home.html");
+                startActivity(intent);
+                return true;
+            });
         }
     }
 }

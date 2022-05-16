@@ -1,42 +1,79 @@
 package com.lborof028685.evassist2;
 
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
-import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
-import com.firebase.ui.auth.IdpResponse;
-import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
-import com.google.android.gms.maps.model.LatLng;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
+
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.lborof028685.evassist2.data.TipContract;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.ArrayList;
 
-public class GuideActivity extends AppCompatActivity {
+public class GuideActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     BottomNavigationView bottomNavigationView;
     // Write a message to the database
     FirebaseAuth auth = FirebaseAuth.getInstance();
     FirebaseUser user = auth.getCurrentUser();
 
+    SimpleCursorAdapter adapter;
+    Boolean onTablet=false;
+    ArrayList<String> tips = new ArrayList<>();
 
+    public void displayListViewOfTips(){
+        // initialise a new simpleCursorAdapter
+        adapter = new SimpleCursorAdapter(
+                getApplicationContext(),
+                R.layout.guidelistview,
+                null,
+                new String[] {TipContract.TipsTable.COLUMN_TIP_TITLE},
+                new int[]{R.id.list_item},
+                0
+        );
+
+        //grab the listview element
+        ListView mylv = findViewById(R.id.guideList);
+
+        // bind the adapter
+        mylv.setAdapter(adapter);
+        mylv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                //Send a toast for now
+                //Handle the click here:
+                //make a toast
+                //1. create the 3 arguments required for a Toast message
+                Context context = getApplicationContext();
+                CharSequence msg = "Item Clicked!";
+                int duration = Toast.LENGTH_SHORT;
+                //2. create an object of Toast
+                Toast toast = Toast.makeText(context,msg,duration);
+                //3. display the Toast
+                toast.show();
+            }
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,5 +137,32 @@ public class GuideActivity extends AppCompatActivity {
             }
         });
 
+        //instantiate Loader
+        LoaderManager.getInstance(this).initLoader(0, null, this);
+
+        displayListViewOfTips();
+
+    }
+    private static final int TIPS_LOADER = 1;
+    @NonNull
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+        String[] columns = {
+                TipContract.TipsTable._ID,
+                TipContract.TipsTable.COLUMN_TIP_TITLE
+        };
+        return new CursorLoader(getApplicationContext(), TipContract.TipsTable.CONTENT_URI,columns,null,null,null);
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+        adapter.swapCursor(data);
+        findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+        adapter.swapCursor(null);
+        Log.i("loader","onLoaderReset");
     }
 }

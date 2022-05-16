@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
@@ -17,7 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
 
 
-public class ArticleFragment extends AppCompatActivity {
+public class WebViewActivity extends AppCompatActivity {
 
     public WebView myWebView;
     private ProgressBar spinner;
@@ -34,28 +33,29 @@ public class ArticleFragment extends AppCompatActivity {
 
         //get uri
         Intent intent = getIntent();
-        String articleLink = intent.getStringExtra("articleLink");
+        String link = intent.getStringExtra("link");
 
         myWebView = (WebView) findViewById(R.id.webview);
         spinner = (ProgressBar)findViewById(R.id.progressBar);
-        myWebView.setWebViewClient(new CustomWeb());
+
 
         myWebView.getSettings().setJavaScriptEnabled(true);
         myWebView.getSettings().setDomStorageEnabled(true);
+        myWebView.getSettings().setAllowFileAccess(true);
         myWebView.setOverScrollMode(WebView.OVER_SCROLL_NEVER);
-
+        myWebView.setWebViewClient(new WebViewClient());
 
         // TODO: change to a layout with back button etc
 
         Context context = getApplicationContext();
-        CharSequence text = articleLink;
+        CharSequence text = link;
         int duration = Toast.LENGTH_SHORT;
 
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
 
 
-        myWebView.loadUrl(articleLink);
+        myWebView.loadUrl(link);
 
 
     }

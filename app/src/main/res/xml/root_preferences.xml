@@ -16,6 +16,12 @@
             app:title="Car Model"
             app:useSimpleSummaryProvider="true" />
 
+        <Preference
+            android:title="User Guide"
+            android:key="userGuideBtn"
+            android:summary="View user guide WebView"
+            />
+
     </PreferenceCategory>
 
 

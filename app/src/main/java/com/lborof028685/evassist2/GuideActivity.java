@@ -63,7 +63,7 @@ public class GuideActivity extends AppCompatActivity implements LoaderManager.Lo
         mylv.setAdapter(adapter);
         mylv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
 
                 return true;
             }
@@ -71,10 +71,7 @@ public class GuideActivity extends AppCompatActivity implements LoaderManager.Lo
         mylv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                //Send a toast for now
-                //Handle the click here:
-                //make a toast
-                //1. create the 3 arguments required for a Toast message
+
                 Context context = getApplicationContext();
                 Cursor cursor = (Cursor) adapterView.getAdapter().getItem(position);
                 Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(cursor));
@@ -96,13 +93,6 @@ public class GuideActivity extends AppCompatActivity implements LoaderManager.Lo
                 // or ft.add(R.id.your_placeholder, new FooFragment());
                 // Complete the changes added above
                                 ft.commit();
-                CharSequence msg = cursor.getString(0);
-
-                int duration = Toast.LENGTH_SHORT;
-                //2. create an object of Toast
-                Toast toast = Toast.makeText(context,msg,duration);
-                //3. display the Toast
-                toast.show();
 
             }
         });

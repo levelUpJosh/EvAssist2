@@ -25,6 +25,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".TipActivity"
+            android:exported="false" />
+        <activity
             android:name=".SettingsActivity"
             android:exported="false"
             android:label="@string/title_activity_settings" />
@@ -35,6 +38,7 @@
         <activity
             android:name=".RegisterUserActivity"
             android:exported="false" />
+
         <activity
             android:name=".NewsActivity"
             android:exported="false" />
@@ -67,10 +71,10 @@
         </activity>
 
         <provider
-            android:name="com.lborof028685.evassist2.data.TipProvider"
+            android:name=".data.TipProvider"
             android:authorities="com.lborof028685.evassist2"
             android:enabled="true"
-            android:exported="true"></provider>
+            android:exported="true" />
     </application>
 
 </manifest>

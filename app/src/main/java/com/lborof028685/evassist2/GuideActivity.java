@@ -1,8 +1,12 @@
 package com.lborof028685.evassist2;
 
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -16,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
@@ -28,6 +33,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.lborof028685.evassist2.data.TipContract;
+import com.lborof028685.evassist2.data.TipProvider;
 
 import java.util.ArrayList;
 
@@ -41,8 +47,10 @@ public class GuideActivity extends AppCompatActivity implements LoaderManager.Lo
     Boolean onTablet=false;
     ArrayList<String> tips = new ArrayList<>();
 
+
     public void displayListViewOfTips(){
         // initialise a new simpleCursorAdapter
+
         adapter = new SimpleCursorAdapter(
                 getApplicationContext(),
                 R.layout.guidelistview,
@@ -59,18 +67,40 @@ public class GuideActivity extends AppCompatActivity implements LoaderManager.Lo
         mylv.setAdapter(adapter);
         mylv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 //Send a toast for now
                 //Handle the click here:
                 //make a toast
                 //1. create the 3 arguments required for a Toast message
                 Context context = getApplicationContext();
-                CharSequence msg = "Item Clicked!";
+                Cursor cursor = (Cursor) adapterView.getAdapter().getItem(position);
+                Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(cursor));
+
+                Integer tipToGet = cursor.getInt(0);
+
+                //Intent openTipIntent = new Intent(getApplicationContext(),TipActivity.class);
+                //openTipIntent.putExtra("_ID",tipToGet);
+                //startActivity(openTipIntent);
+
+                TipFragment fragment = new TipFragment();
+                Bundle arguments = new Bundle();
+                arguments.putInt(TipContract.TipsTable._ID,tipToGet);
+                fragment.setArguments(arguments);
+                // Begin the transaction
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                // Replace the contents of the container with the new fragment
+                                ft.replace(R.id.fragmentPlaceholder, fragment);
+                // or ft.add(R.id.your_placeholder, new FooFragment());
+                // Complete the changes added above
+                                ft.commit();
+                CharSequence msg = cursor.getString(0);
+
                 int duration = Toast.LENGTH_SHORT;
                 //2. create an object of Toast
                 Toast toast = Toast.makeText(context,msg,duration);
                 //3. display the Toast
                 toast.show();
+
             }
         });
     }
@@ -78,6 +108,17 @@ public class GuideActivity extends AppCompatActivity implements LoaderManager.Lo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Uri newUri;
+        ContentValues newValues = new ContentValues();
+
+        newValues.put(TipContract.TipsTable.COLUMN_TIP_TITLE,"TEST");
+        newValues.put(TipContract.TipsTable.COLUMN_TIP_CONTENT,"TEST CONTENT");
+
+        newUri = getContentResolver().insert(
+                TipContract.TipsTable.CONTENT_URI,
+                newValues
+        );
+
         FirebaseDatabase database = FirebaseDatabase.getInstance("https://ev-assistant-3d3e4-default-rtdb.europe-west1.firebasedatabase.app/");
         ActionBar actionBar = getSupportActionBar();
         //actionBar.setTitle(user.getDisplayName());

@@ -1,12 +1,9 @@
 package com.lborof028685.evassist2;
 
-import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -33,7 +30,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.lborof028685.evassist2.data.TipContract;
-import com.lborof028685.evassist2.data.TipProvider;
 
 import java.util.ArrayList;
 
@@ -65,6 +61,13 @@ public class GuideActivity extends AppCompatActivity implements LoaderManager.Lo
 
         // bind the adapter
         mylv.setAdapter(adapter);
+        mylv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                return true;
+            }
+        });
         mylv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -108,16 +111,6 @@ public class GuideActivity extends AppCompatActivity implements LoaderManager.Lo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Uri newUri;
-        ContentValues newValues = new ContentValues();
-
-        newValues.put(TipContract.TipsTable.COLUMN_TIP_TITLE,"TEST");
-        newValues.put(TipContract.TipsTable.COLUMN_TIP_CONTENT,"TEST CONTENT");
-
-        newUri = getContentResolver().insert(
-                TipContract.TipsTable.CONTENT_URI,
-                newValues
-        );
 
         FirebaseDatabase database = FirebaseDatabase.getInstance("https://ev-assistant-3d3e4-default-rtdb.europe-west1.firebasedatabase.app/");
         ActionBar actionBar = getSupportActionBar();

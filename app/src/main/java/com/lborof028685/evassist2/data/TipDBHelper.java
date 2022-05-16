@@ -1,5 +1,6 @@
 package com.lborof028685.evassist2.data;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -9,7 +10,7 @@ import androidx.annotation.Nullable;
 
 public class TipDBHelper extends SQLiteOpenHelper {
 
-    public static final int DB_VERSION = 1;
+    public static final int DB_VERSION = 3;
 
     // set as public ffor test
     public static final String DB_NAME = "tips.db";
@@ -36,6 +37,44 @@ public class TipDBHelper extends SQLiteOpenHelper {
                 TipContract.TipsTable.COLUMN_TIP_PARENT+
                 " INTEGER  );";
         sqLiteDatabase.execSQL(query);
+        class Tip {
+            String title;
+            String content;
+            Integer parent;
+
+            Tip (String title, String content, Integer parent) {
+                this.title = title;
+                this.content = content;
+                this.parent = parent;
+                insert();
+            }
+            Tip (String title, String content) {
+                this.title = title;
+                this.content = content;
+                insert();
+            }
+
+            public ContentValues getValues() {
+                ContentValues newValues = new ContentValues();
+
+                newValues.put(TipContract.TipsTable.COLUMN_TIP_TITLE,this.title);
+                newValues.put(TipContract.TipsTable.COLUMN_TIP_CONTENT,this.content);
+                newValues.put(TipContract.TipsTable.COLUMN_TIP_PARENT,this.parent);
+
+                return newValues;
+            }
+
+            public void insert() {
+                sqLiteDatabase.insertOrThrow(TipContract.TipsTable.TABLE_NAME,null,getValues());
+            }
+        }
+        new Tip("Seek out hotels that offer charging","Good Tip here!");
+        new Tip("Only charge your car to 80% in public","Good Tip here!");
+
+
+
+
+
         Log.i("TipDBHelper","TipDBHelper onCreate()");
 
 

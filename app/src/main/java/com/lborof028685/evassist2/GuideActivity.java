@@ -3,7 +3,6 @@ package com.lborof028685.evassist2;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -73,23 +72,24 @@ public class GuideActivity extends AppCompatActivity implements LoaderManager.Lo
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 
                 Context context = getApplicationContext();
-                Cursor cursor = (Cursor) adapterView.getAdapter().getItem(position);
-                Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(cursor));
 
-                Integer tipToGet = cursor.getInt(0);
 
+                Log.v("ID TO GET", String.valueOf(position));
+
+                Log.v("tipToGet", String.valueOf(position+1));
                 //Intent openTipIntent = new Intent(getApplicationContext(),TipActivity.class);
                 //openTipIntent.putExtra("_ID",tipToGet);
                 //startActivity(openTipIntent);
 
                 TipFragment fragment = new TipFragment();
                 Bundle arguments = new Bundle();
-                arguments.putInt(TipContract.TipsTable._ID,tipToGet);
+                arguments.putInt(TipContract.TipsTable._ID,position+1);
                 fragment.setArguments(arguments);
                 // Begin the transaction
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 // Replace the contents of the container with the new fragment
                                 ft.replace(R.id.fragmentPlaceholder, fragment);
+                                ft.addToBackStack(null);
                 // or ft.add(R.id.your_placeholder, new FooFragment());
                 // Complete the changes added above
                                 ft.commit();

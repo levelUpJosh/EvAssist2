@@ -10,7 +10,7 @@ import androidx.annotation.Nullable;
 
 public class TipDBHelper extends SQLiteOpenHelper {
 
-    public static final int DB_VERSION = 3;
+    public static final int DB_VERSION = 6;
 
     // set as public ffor test
     public static final String DB_NAME = "tips.db";
@@ -68,8 +68,8 @@ public class TipDBHelper extends SQLiteOpenHelper {
                 sqLiteDatabase.insertOrThrow(TipContract.TipsTable.TABLE_NAME,null,getValues());
             }
         }
-        new Tip("Seek out hotels that offer charging","Good Tip here!");
-        new Tip("Only charge your car to 80% in public","Good Tip here!");
+        new Tip("Seek out hotels that offer charging","Look out for hotels that offer overnight charging. There are perhaps more than you expect and no, it won't limit your choice. It'll only make your time easier!");
+        new Tip("Only charge your car to 80% in public","DC chargers have a certain \"Charging Curve\" which means that they will charge faster at lower percentages. It's possible that stopping twice on a long journey will actually be shorter for you.");
 
 
 

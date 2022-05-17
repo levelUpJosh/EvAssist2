@@ -2,6 +2,7 @@ package com.lborof028685.evassist2;
 
 import static android.content.ContentValues.TAG;
 
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -18,6 +19,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.app.TaskStackBuilder;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -34,6 +36,8 @@ public class ChargingStationActivity extends AppCompatActivity {
     DatabaseReference ref = database.getReference("charging/stations");
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     Integer stationID;
+    Integer total;
+    ToggleButton hereBtn;
 
     ValueEventListener availableListener = new ValueEventListener() {
         @Override
@@ -55,12 +59,28 @@ public class ChargingStationActivity extends AppCompatActivity {
                 notiText = numAvailable+" charger"+plural+" just became available!";
             } else {
                 notiText = "There are now 0 chargers";
+                hereBtn.setChecked(true);
             }
             NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "Availability")
                     .setSmallIcon(R.drawable.notification_icon)
                     .setContentTitle(notiTitle)
                     .setContentText(notiText)
                     .setPriority(NotificationCompat.PRIORITY_MAX);
+
+            // Create an Intent for the activity you want to start
+            Intent resultIntent = new Intent(getApplicationContext(), ChargingStationActivity.class);
+            resultIntent.putExtra("stationID",stationID);
+            // Create the TaskStackBuilder and add the intent, which inflates the back stack
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
+            stackBuilder.addNextIntentWithParentStack(resultIntent);
+            // Get the PendingIntent containing the entire back stack
+            PendingIntent resultPendingIntent =
+                    stackBuilder.getPendingIntent(0,
+                            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+
+            builder.setContentIntent(resultPendingIntent);
+
             NotificationManagerCompat manCompat = NotificationManagerCompat.from(ChargingStationActivity.this);
             manCompat.notify(1,builder.build());
 
@@ -79,23 +99,20 @@ public class ChargingStationActivity extends AppCompatActivity {
 
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
+        // Stop listening once we leave the app
         ref.child("numAvailable").removeEventListener(availableListener);
 
     }
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        ref.child("numAvailable").addValueEventListener(availableListener);
 
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_charging_station);
         ActionBar actionBar = getSupportActionBar();
+        hereBtn = findViewById(R.id.hereBtn);
 
         // get the station info from the intent:
         Intent intent = getIntent();
@@ -115,7 +132,7 @@ public class ChargingStationActivity extends AppCompatActivity {
         ValueEventListener eventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                ToggleButton hereBtn = findViewById(R.id.hereBtn);
+
                 if(!dataSnapshot.exists()) {
                     // The user isn't marked as being "at the station"
                     hereBtn.setChecked(false);
@@ -134,17 +151,24 @@ public class ChargingStationActivity extends AppCompatActivity {
 
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        if(isChecked)
-                        {
                             ref.child("numAvailable").addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     Integer number = snapshot.getValue(Integer.class);
-                                    if (number > 0) {
-                                        ref.child("numAvailable").setValue(snapshot.getValue(Integer.class)-1);
+                                    if (isChecked) {
+                                        if (number > 0) {
+                                            ref.child("numAvailable").setValue(snapshot.getValue(Integer.class)-1);
+                                        } else {
+
+
+                                        }
                                     } else {
-                                        hereBtn.setEnabled(false);
+                                        if (number < total)
+                                        {
+                                            ref.child("numAvailable").setValue(snapshot.getValue(Integer.class)+1);
+                                        }
                                     }
+
                                 }
 
                                 @Override
@@ -152,21 +176,6 @@ public class ChargingStationActivity extends AppCompatActivity {
 
                                 }
                             });
-                        }
-                        else
-                        {
-                            ref.child("numAvailable").addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    ref.child("numAvailable").setValue(snapshot.getValue(Integer.class)+1);
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-
-                                }
-                            });
-                        }
 
                     }
                 });
@@ -199,7 +208,7 @@ public class ChargingStationActivity extends AppCompatActivity {
                     final TextView nameText = (TextView) findViewById(R.id.nameText);
                     nameText.setText(name);
 
-                    Integer total = snapshot.child("numTotal").getValue(Integer.class);
+                    total = snapshot.child("numTotal").getValue(Integer.class);
                     final TextView totalText = (TextView) findViewById(R.id.totalText);
                     totalText.setText("out of "+total+" available");
 

@@ -12,13 +12,13 @@
         <ListPreference
             app:entries="@array/car_models"
             app:entryValues="@array/car_values"
-            app:key="reply"
-            app:title="Car Model"
+            app:key="@string/car_model"
+            app:title="@string/car_model"
             app:useSimpleSummaryProvider="true" />
 
         <Preference
-            android:title="User Guide"
-            android:key="userGuideBtn"
+            android:title="@string/user_guide"
+            android:key="@string/user_guide"
             android:summary="View user guide WebView"
             />
 

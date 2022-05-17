@@ -1,6 +1,7 @@
 package com.lborof028685.evassist2;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -9,8 +10,10 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
@@ -70,9 +73,9 @@ public class SettingsActivity extends AppCompatActivity {
         });
     }
 
-    public static class SettingsFragment extends PreferenceFragmentCompat {
+    public static class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
+        SharedPreferences sharedPreferences;
         // See: https://developer.android.com/training/basics/intents/result
         private final ActivityResultLauncher<Intent> signInLauncher = registerForActivityResult(
                 new FirebaseAuthUIActivityResultContract(),
@@ -148,9 +151,14 @@ public class SettingsActivity extends AppCompatActivity {
         }
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-            setPreferencesFromResource(R.xml.root_preferences, rootKey);
+            addPreferencesFromResource(R.xml.root_preferences);
+
+            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+            onSharedPreferenceChanged(sharedPreferences,getString(R.string.car_model));
+
             setAccountBtn();
-            Preference button = findPreference("userGuideBtn");
+            Preference button = findPreference(getString(R.string.user_guide));
             button.setOnPreferenceClickListener(preference -> {
                 //code for what you want it to do
                 // create intent
@@ -159,6 +167,38 @@ public class SettingsActivity extends AppCompatActivity {
                 startActivity(intent);
                 return true;
             });
+        }
+
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            Preference preference = findPreference(key);
+            Preference.SummaryProvider summaryProvider;
+            CharSequence newSummary = "";
+            if (preference instanceof ListPreference) {
+                ListPreference listPref = (ListPreference) preference;
+                int pIndex = listPref.findIndexOfValue(sharedPreferences.getString(key,""));
+                if (pIndex >= 0) {
+                    summaryProvider = preference1 -> listPref.getEntries()[pIndex];
+                } else {
+                    summaryProvider = preference1 -> sharedPreferences.getString(key, "");
+
+                }
+                preference.setSummaryProvider(summaryProvider);
+
+            }
+        }
+
+        @Override
+        public void onResume() {
+            //reregister the listener
+            super.onResume();
+            getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+        }
+        @Override
+        public void onPause(){
+            super.onPause();
+            // unregister
+            getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
         }
     }
 }

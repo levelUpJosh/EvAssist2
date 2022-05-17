@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -64,13 +65,13 @@ public class TipProvider extends ContentProvider {
                 myCursor = myDBHelper.getReadableDatabase().query(
                         TipContract.TipsTable.TABLE_NAME,
                         projection,
-                        TipContract.TipsTable._ID + " = '"+ ContentUris.parseId(uri) + "'",
+                        TipContract.TipsTable._ID + " = ?",
                         selectionArgs,
                         null,
                         null,
                         sortOrder
                 );
-                Log.i("TipProvider","querying TIP with title "+ContentUris.parseId(uri));
+                Log.i("TipProvider","querying TIP with _id "+ContentUris.parseId(uri));
                 Log.i("TipProvider",Integer.toString(myCursor.getCount()));
                 break;
             default:
@@ -138,14 +139,34 @@ public class TipProvider extends ContentProvider {
     }
 
     @Override
-    public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String s, @Nullable String[] strings) {
+    public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String selection, @Nullable String[] selectionArgs) {
         // TODO: Implement this to handle requests to update one or more rows.
         int match_code = myUriMatcher.match(uri);
+        SQLiteDatabase db = myDBHelper.getWritableDatabase();
+        int rowsUpdated;
 
         switch(match_code){
             case TIPS:{
+                rowsUpdated =  db.update(TipContract.TipsTable.TABLE_NAME,
+                        contentValues,
+                        selection,
+                        selectionArgs);
                 break;
             }
+            case TIP_WITH_ID:
+                if (TextUtils.isEmpty(selection)) {
+                    rowsUpdated = db.update(TipContract.TipsTable.TABLE_NAME,
+                            contentValues,
+                            TipContract.TipsTable._ID+" = ?",
+                            null);
+                } else {
+                    rowsUpdated = db.update(TipContract.TipsTable.TABLE_NAME,
+                            contentValues,
+                            TipContract.TipsTable._ID + " = ? AND ?",
+                            selectionArgs);
+                    break;
+                }
+                break;
             default:
                 throw new UnsupportedOperationException("Not yet implemented");
         }

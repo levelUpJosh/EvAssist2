@@ -64,7 +64,7 @@ public class TipProvider extends ContentProvider {
                 myCursor = myDBHelper.getReadableDatabase().query(
                         TipContract.TipsTable.TABLE_NAME,
                         projection,
-                        TipContract.TipsTable.COLUMN_TIP_TITLE + " = '"+ ContentUris.parseId(uri) + "'",
+                        TipContract.TipsTable._ID + " = '"+ ContentUris.parseId(uri) + "'",
                         selectionArgs,
                         null,
                         null,

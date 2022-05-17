@@ -2,10 +2,14 @@ package com.lborof028685.evassist2;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,9 +38,27 @@ public class ChargingActivity extends AppCompatActivity implements GoogleMap.OnM
     private FusedLocationProviderClient fusedLocationClient;
 
     BottomNavigationView bottomNavigationView;
+
+    public boolean internetAvailable() {
+
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = connectivityManager.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (!internetAvailable()){
+            // No internet, abort and toast
+            Context context = getApplicationContext();
+            CharSequence text = "No internet access to retrieve map markers";
+
+            Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
 
         // Set the layout file as the content view.

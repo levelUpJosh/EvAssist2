@@ -10,7 +10,7 @@ import androidx.annotation.Nullable;
 
 public class TipDBHelper extends SQLiteOpenHelper {
 
-    public static final int DB_VERSION = 6;
+    public static final int DB_VERSION = 7;
 
     // set as public ffor test
     public static final String DB_NAME = "tips.db";
@@ -70,6 +70,8 @@ public class TipDBHelper extends SQLiteOpenHelper {
         }
         new Tip("Seek out hotels that offer charging","Look out for hotels that offer overnight charging. There are perhaps more than you expect and no, it won't limit your choice. It'll only make your time easier!");
         new Tip("Only charge your car to 80% in public","DC chargers have a certain \"Charging Curve\" which means that they will charge faster at lower percentages. It's possible that stopping twice on a long journey will actually be shorter for you.");
+        new Tip("Preheat your car's battery","Cars such as the Polestar 2 can preheat their battery when a charger is set as a destination");
+        new Tip("Charger Etiquette","If you find yourself at a busy DC site, only charge to 80% if you need to. Perhaps put a note in saying when you'll be back but make sure to be aware and come back when the car is ready");
 
 
 

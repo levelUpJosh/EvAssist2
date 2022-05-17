@@ -16,13 +16,19 @@ import androidx.annotation.Nullable;
 
 public class TipProvider extends ContentProvider {
     // derived from lab08, originally by yjp
+
+    // Define match codes
     public static final int TIPS = 100;
     public static final int TIP_WITH_ID = 101;
 
+    // Define helper classes
     private static UriMatcher myUriMatcher = buildUriMatcher();
     public static TipDBHelper myDBHelper;
 
     private static UriMatcher buildUriMatcher(){
+        /**
+         * Builds a UriMatcher based on the TipContract
+         */
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
 
         matcher.addURI(TipContract.CONTENT_AUTHORITY,TipContract.PATH_TIPS,TIPS);
@@ -35,6 +41,8 @@ public class TipProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
+
+        // Get TipDBHelper object
         myDBHelper = new TipDBHelper(getContext(),TipDBHelper.DB_NAME,null,TipDBHelper.DB_VERSION);
         return true;
     }
@@ -42,12 +50,16 @@ public class TipProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
-        // Handle queries from clients
+
+        /**
+         * Handles client queries
+         */
         int match_code = myUriMatcher.match(uri);
         Cursor myCursor;
 
         switch (match_code) {
             case TIPS:
+                // get a writeable database of the whole data
                 SQLiteDatabase db = myDBHelper.getWritableDatabase();
                 myCursor = db.query(
                         TipContract.TipsTable.TABLE_NAME, //TABLE TO QUERY
@@ -62,6 +74,7 @@ public class TipProvider extends ContentProvider {
                 Log.i("TipProvider",Integer.toString(myCursor.getCount()));
                 break;
             case TIP_WITH_ID:
+                // get a read only form of one particular record
                 myCursor = myDBHelper.getReadableDatabase().query(
                         TipContract.TipsTable.TABLE_NAME,
                         projection,
@@ -78,6 +91,7 @@ public class TipProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Not Supported");
 
         }
+
         myCursor.setNotificationUri(getContext().getContentResolver(),uri);
         return myCursor;
     }
@@ -85,6 +99,9 @@ public class TipProvider extends ContentProvider {
     @Nullable
     @Override
     public String getType(@NonNull Uri uri) {
+        /**
+         * Determines the content type
+         */
         int match_code = myUriMatcher.match(uri);
 
         switch (match_code){
@@ -100,6 +117,9 @@ public class TipProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues contentValues) {
+        /**
+         * Inserts data into the database
+         */
         // inserts new rows
         int match_code = myUriMatcher.match(uri);
         Uri retUri;
@@ -109,6 +129,7 @@ public class TipProvider extends ContentProvider {
                 SQLiteDatabase db = myDBHelper.getWritableDatabase();
                 long _id = db.insert(TipContract.TipsTable.TABLE_NAME,null,contentValues);
                 if (_id > 0) {
+                    // gets a Uri based on the requested TipNo
                     retUri = TipContract.TipsTable.buildTipUriWithTipNo(_id);
                 }
                 else
@@ -123,7 +144,9 @@ public class TipProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String s, @Nullable String[] strings) {
-        // TODO: Implement this to handle requests to delete one or more rows.
+        /**
+         * Delete the TIPs table
+         */
         int match_code = myUriMatcher.match(uri);
 
         switch(match_code){
@@ -140,9 +163,15 @@ public class TipProvider extends ContentProvider {
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String selection, @Nullable String[] selectionArgs) {
-        // TODO: Implement this to handle requests to update one or more rows.
+        /**
+         * Update rows in the database
+         */
         int match_code = myUriMatcher.match(uri);
+
+        // get the db
         SQLiteDatabase db = myDBHelper.getWritableDatabase();
+
+        // create a variable for the number of rows updated
         int rowsUpdated;
 
         switch(match_code){
@@ -154,12 +183,15 @@ public class TipProvider extends ContentProvider {
                 break;
             }
             case TIP_WITH_ID:
+                // if selection is not provided then
                 if (TextUtils.isEmpty(selection)) {
+                    // just use _ID to get the record
                     rowsUpdated = db.update(TipContract.TipsTable.TABLE_NAME,
                             contentValues,
                             TipContract.TipsTable._ID+" = ?",
                             null);
                 } else {
+                    // else consider the selection criteria also
                     rowsUpdated = db.update(TipContract.TipsTable.TABLE_NAME,
                             contentValues,
                             TipContract.TipsTable._ID + " = ? AND ?",

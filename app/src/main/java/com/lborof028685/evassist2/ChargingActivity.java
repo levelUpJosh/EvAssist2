@@ -33,6 +33,12 @@ import java.util.HashMap;
 
 // Implement OnMapReadyCallback.
 public class ChargingActivity extends AppCompatActivity implements GoogleMap.OnMarkerClickListener,OnMapReadyCallback {
+    /**
+     * Activity:
+     * Holds the charging map and generates the necessary markers from the Firebase Realtime Database
+     */
+
+    // get the database from firebase
     FirebaseDatabase database = FirebaseDatabase.getInstance("https://ev-assistant-3d3e4-default-rtdb.europe-west1.firebasedatabase.app/");
 
     private FusedLocationProviderClient fusedLocationClient;
@@ -40,6 +46,9 @@ public class ChargingActivity extends AppCompatActivity implements GoogleMap.OnM
     BottomNavigationView bottomNavigationView;
 
     public boolean internetAvailable() {
+        /**
+         * Determines if there is an active connection to the Internet
+         */
 
         ConnectivityManager connectivityManager =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -51,7 +60,7 @@ public class ChargingActivity extends AppCompatActivity implements GoogleMap.OnM
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (!internetAvailable()){
-            // No internet, abort and toast
+            //Abort if internet connection is not available and provide a toast to explain this to the user
             Context context = getApplicationContext();
             CharSequence text = "No internet access to retrieve map markers";
 
@@ -64,6 +73,7 @@ public class ChargingActivity extends AppCompatActivity implements GoogleMap.OnM
         // Set the layout file as the content view.
         setContentView(R.layout.activity_charging);
 
+        // Get and hide the App Bar
         getSupportActionBar().hide();
 
         // Get a handle to the fragment and register the callback.
@@ -71,12 +81,12 @@ public class ChargingActivity extends AppCompatActivity implements GoogleMap.OnM
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        //startActivity(new Intent(getApplicationContext(),FirebaseLoginUIActivity.class));
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
-
+        // select the correct nav item
         bottomNavigationView.setSelectedItemId(R.id.chargingSelector);
 
+        // assign listeners to nav
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -102,6 +112,7 @@ public class ChargingActivity extends AppCompatActivity implements GoogleMap.OnM
         });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            // Above Android 8.0 Oreo, it is necessary to define notification channels.
             NotificationChannel channel =  new NotificationChannel("Availability","Charge Available", NotificationManager.IMPORTANCE_DEFAULT);
             NotificationManager man =  getSystemService(NotificationManager.class);
             man.createNotificationChannel(channel);
@@ -112,21 +123,27 @@ public class ChargingActivity extends AppCompatActivity implements GoogleMap.OnM
     // Get a handle to the GoogleMap object and display marker.
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
+        // move the camera to roughly the center of the UK
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(53.9091995,-2.4746993), (float) 5.5));
 
+        // get the reference to the stations object in the database
         DatabaseReference ref_to_stations = database.getReference("charging/stations");
+
+        // get the marker locations and info
         ref_to_stations.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnaps : snapshot.getChildren()) {
                     //String keys = dataSnaps.getKey();
 
+                    // unpack the longitude/latitude/name
                     HashMap<String, Double> data = (HashMap<String, Double>) dataSnaps.child("coords").getValue();
                     double latitude = data.get("latitude");
                     double longitude = data.get("longitude");
                     String fullName = dataSnaps.child("network").getValue(String.class)+" "+dataSnaps.child("name").getValue(String.class);
-                    // your further code.
 
+                    // Add the Google Map Marker where each station is
                     Marker marker = googleMap.addMarker(new MarkerOptions()
                             .title(fullName)
                             .position(new LatLng(latitude,longitude)));
@@ -159,10 +176,15 @@ public class ChargingActivity extends AppCompatActivity implements GoogleMap.OnM
         // get the tag
         Integer stationID = (Integer) marker.getTag();
 
-        // create intent
+        // create intent to go to info about that particular station
         Intent intent = new Intent(getApplicationContext(),ChargingStationActivity.class);
+
+        // put the extra containing the stationID
         intent.putExtra("stationID",stationID);
+
+        // start the intent
         startActivity(intent);
+
 
         return false;
     }

@@ -5,6 +5,10 @@ import android.net.Uri;
 import java.util.Date;
 
 public class Article {
+    /**
+     * Provides an organised container for Articles retrieved from a RSS feed
+     */
+    // Define basic attributes for the Article
     String title;
     String link;
     Date datePosted;

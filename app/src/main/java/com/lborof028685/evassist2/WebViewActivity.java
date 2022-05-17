@@ -28,10 +28,10 @@ public class WebViewActivity extends AppCompatActivity {
 
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true); // show back button
 
 
-        //get uri
+        //get uri from Intent
         Intent intent = getIntent();
         String link = intent.getStringExtra("link");
 
@@ -39,14 +39,17 @@ public class WebViewActivity extends AppCompatActivity {
         spinner = (ProgressBar)findViewById(R.id.progressBar);
 
 
+        // settings for the webview
         myWebView.getSettings().setJavaScriptEnabled(true);
         myWebView.getSettings().setDomStorageEnabled(true);
         myWebView.getSettings().setAllowFileAccess(true);
         myWebView.setOverScrollMode(WebView.OVER_SCROLL_NEVER);
+
+        // set the client
         myWebView.setWebViewClient(new WebViewClient());
 
-        // TODO: change to a layout with back button etc
 
+        // make a toast
         Context context = getApplicationContext();
         CharSequence text = link;
         int duration = Toast.LENGTH_SHORT;
@@ -55,6 +58,7 @@ public class WebViewActivity extends AppCompatActivity {
         toast.show();
 
 
+        // load the link
         myWebView.loadUrl(link);
 
 
@@ -71,11 +75,12 @@ public class WebViewActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    // Splash screen for webview to show its loading
+    // Splash screen for WebView to show it's loading
     private class CustomWeb extends WebViewClient {
         @Override
         public void onPageStarted(WebView webview, String url, Bitmap favicon) {
             if (ShowOrHideWebViewInitial) {
+                // hide the webview at first
                 webview.setVisibility(webview.INVISIBLE);
             }
 
@@ -83,8 +88,13 @@ public class WebViewActivity extends AppCompatActivity {
 
         @Override
         public void onPageFinished(WebView webview, String url) {
+
             ShowOrHideWebViewInitial =false;
+
+            // hide the spinner
             spinner.setVisibility(View.GONE);
+
+            // show the webview
             webview.setVisibility(webview.VISIBLE);
             super.onPageFinished(webview,url);
         }

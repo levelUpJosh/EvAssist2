@@ -33,6 +33,10 @@ import com.lborof028685.evassist2.data.TipContract;
 import java.util.ArrayList;
 
 public class GuideActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+    /**
+     * Acitivity:
+     * Displays the tips in a ListView and contains the TipFragment
+     */
     BottomNavigationView bottomNavigationView;
     // Write a message to the database
     FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -60,6 +64,8 @@ public class GuideActivity extends AppCompatActivity implements LoaderManager.Lo
 
         // bind the adapter
         mylv.setAdapter(adapter);
+
+        // TODO: set up adding favourite on long click
         mylv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -67,6 +73,8 @@ public class GuideActivity extends AppCompatActivity implements LoaderManager.Lo
                 return true;
             }
         });
+
+        // add listener for each item
         mylv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -77,22 +85,25 @@ public class GuideActivity extends AppCompatActivity implements LoaderManager.Lo
                 Log.v("ID TO GET", String.valueOf(position));
 
                 Log.v("tipToGet", String.valueOf(position+1));
-                //Intent openTipIntent = new Intent(getApplicationContext(),TipActivity.class);
-                //openTipIntent.putExtra("_ID",tipToGet);
-                //startActivity(openTipIntent);
 
+                // instantiate a new TipFragment
                 TipFragment fragment = new TipFragment();
+
+                // create the arguments bundle
                 Bundle arguments = new Bundle();
+
+                // add the position of the tip in the taple
                 arguments.putInt(TipContract.TipsTable._ID,position+1);
                 fragment.setArguments(arguments);
+
+
                 // Begin the transaction
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 // Replace the contents of the container with the new fragment
-                                ft.replace(R.id.fragmentPlaceholder, fragment);
-                                ft.addToBackStack(null);
-                // or ft.add(R.id.your_placeholder, new FooFragment());
-                // Complete the changes added above
-                                ft.commit();
+                ft.replace(R.id.fragmentPlaceholder, fragment);
+                ft.addToBackStack(null);
+               // then commit
+                ft.commit();
 
             }
         });
@@ -135,9 +146,10 @@ public class GuideActivity extends AppCompatActivity implements LoaderManager.Lo
         //startActivity(new Intent(getApplicationContext(),FirebaseLoginUIActivity.class));
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
-
+        // select the correct nav item
         bottomNavigationView.setSelectedItemId(R.id.guideSelector);
 
+        // assign listeners to nav
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -171,16 +183,23 @@ public class GuideActivity extends AppCompatActivity implements LoaderManager.Lo
     @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+
+        // define the columns for the loader to use
         String[] columns = {
                 TipContract.TipsTable._ID,
                 TipContract.TipsTable.COLUMN_TIP_TITLE
         };
+
+        // return the Loader
         return new CursorLoader(getApplicationContext(), TipContract.TipsTable.CONTENT_URI,columns,null,null,null);
     }
 
     @Override
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+        // swap in the data
         adapter.swapCursor(data);
+
+        // hide the loading circle
         findViewById(R.id.loadingPanel).setVisibility(View.GONE);
     }
 

@@ -12,7 +12,7 @@ public class TipDBHelper extends SQLiteOpenHelper {
 
     public static final int DB_VERSION = 7;
 
-    // set as public ffor test
+    // set as public for dev
     public static final String DB_NAME = "tips.db";
 
     public SQLiteDatabase myDB;
@@ -25,7 +25,7 @@ public class TipDBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         myDB = sqLiteDatabase;
-
+        //define the initial table query
         String query = "CREATE TABLE " +
                 TipContract.TipsTable.TABLE_NAME +
                 " ( "+ TipContract.TipsTable._ID+
@@ -37,16 +37,18 @@ public class TipDBHelper extends SQLiteOpenHelper {
                 TipContract.TipsTable.COLUMN_TIP_PARENT+
                 " INTEGER  );";
         sqLiteDatabase.execSQL(query);
+
+        // Define a convenient inner class for adding the Tips to the database
         class Tip {
             String title;
             String content;
-            Integer parent;
+            Integer parent; //TODO: Link tips to categories
 
             Tip (String title, String content, Integer parent) {
                 this.title = title;
                 this.content = content;
                 this.parent = parent;
-                insert();
+                insert(); //insert directly into db
             }
             Tip (String title, String content) {
                 this.title = title;
@@ -57,6 +59,7 @@ public class TipDBHelper extends SQLiteOpenHelper {
             public ContentValues getValues() {
                 ContentValues newValues = new ContentValues();
 
+                // populate a contentValues variable
                 newValues.put(TipContract.TipsTable.COLUMN_TIP_TITLE,this.title);
                 newValues.put(TipContract.TipsTable.COLUMN_TIP_CONTENT,this.content);
                 newValues.put(TipContract.TipsTable.COLUMN_TIP_PARENT,this.parent);
@@ -65,9 +68,12 @@ public class TipDBHelper extends SQLiteOpenHelper {
             }
 
             public void insert() {
+                //define insert function for Tips class
                 sqLiteDatabase.insertOrThrow(TipContract.TipsTable.TABLE_NAME,null,getValues());
             }
         }
+
+        // Directly add the Tips to the database at creation of DB (ie only once)
         new Tip("Seek out hotels that offer charging","Look out for hotels that offer overnight charging. There are perhaps more than you expect and no, it won't limit your choice. It'll only make your time easier!");
         new Tip("Only charge your car to 80% in public","DC chargers have a certain \"Charging Curve\" which means that they will charge faster at lower percentages. It's possible that stopping twice on a long journey will actually be shorter for you.");
         new Tip("Preheat your car's battery","Cars such as the Polestar 2 can preheat their battery when a charger is set as a destination");

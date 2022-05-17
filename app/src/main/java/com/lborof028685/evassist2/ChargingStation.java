@@ -1,8 +1,6 @@
 package com.lborof028685.evassist2;
 
 
-import android.content.Context;
-
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -12,9 +10,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-
 public class ChargingStation {
+    /**
+     * Organises any particular charging location into one object.
+     * Includes multiple ChargingDevice objects which may in turn have multiple ChargingPort objects
+     *
+     * Was intended for use in ChargingStationActivity to represent data from firebase,
+     * however due to the realtime nature this was abandoned at the time
+     */
     private String name;
     private String network;
     private LatLng coords;

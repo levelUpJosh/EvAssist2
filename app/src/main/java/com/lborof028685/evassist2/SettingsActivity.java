@@ -27,6 +27,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SettingsActivity extends AppCompatActivity {
+    /**
+     * Displays the settings page for the app
+     */
     BottomNavigationView bottomNavigationView;
 
 
@@ -34,21 +37,28 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_activity);
+
+
         if (savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.settings, new SettingsFragment())
                     .commit();
         }
+
+        // get the app bar
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
+            // set its attributes
+            actionBar.setDisplayHomeAsUpEnabled(false);
+            actionBar.setTitle("Settings");
         }
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
-
+        // select the correct nav item
         bottomNavigationView.setSelectedItemId(R.id.settingSelector);
 
+        // assign listeners to nav
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -74,6 +84,9 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
+        /**
+         * Inner class that provides the settings fragment and uses SharedPreferences to store the preferences
+         */
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         SharedPreferences sharedPreferences;
         // See: https://developer.android.com/training/basics/intents/result
@@ -93,13 +106,7 @@ public class SettingsActivity extends AppCompatActivity {
                 // Successfully signed in
                 user = FirebaseAuth.getInstance().getCurrentUser();
                 setAccountBtn();
-
-                // ...
-            } else {
-                // Sign in failed. If response is null the user canceled the
-                // sign-in flow using the back button. Otherwise check
-                // response.getError().getErrorCode() and handle the error.
-                // ...
+                // with firebase it's not necessary to store the user in SharedPreferences
             }
         }
 
@@ -153,17 +160,29 @@ public class SettingsActivity extends AppCompatActivity {
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             addPreferencesFromResource(R.xml.root_preferences);
 
+            // get the SharedPreferences
             sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
+            // when Car Model changes
             onSharedPreferenceChanged(sharedPreferences,getString(R.string.car_model));
 
+
+            // decide what the account button should do
             setAccountBtn();
+
+            // get the user guide button
             Preference button = findPreference(getString(R.string.user_guide));
+
+            // assign a listener
             button.setOnPreferenceClickListener(preference -> {
-                //code for what you want it to do
+
                 // create intent
                 Intent intent = new Intent(getActivity(), WebViewActivity.class);
+
+                // add user guide link
                 intent.putExtra("link","file:///android_asset/home.html");
+
+                // start the intent
                 startActivity(intent);
                 return true;
             });
@@ -171,18 +190,33 @@ public class SettingsActivity extends AppCompatActivity {
 
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            // when this shared preference is changed
             Preference preference = findPreference(key);
+
+            // prepare space for a new sumamryProvider
             Preference.SummaryProvider summaryProvider;
             CharSequence newSummary = "";
+
+            // if it's a list preference
             if (preference instanceof ListPreference) {
+
+                // get it
                 ListPreference listPref = (ListPreference) preference;
+
+                // get the index
                 int pIndex = listPref.findIndexOfValue(sharedPreferences.getString(key,""));
+
+                // if it's at least 0
                 if (pIndex >= 0) {
+                    // get the chosen index value
                     summaryProvider = preference1 -> listPref.getEntries()[pIndex];
                 } else {
+                    // get the current value if not
                     summaryProvider = preference1 -> sharedPreferences.getString(key, "");
 
                 }
+
+                // set the new summary provider
                 preference.setSummaryProvider(summaryProvider);
 
             }

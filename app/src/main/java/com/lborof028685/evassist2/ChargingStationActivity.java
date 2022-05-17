@@ -32,59 +32,95 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 
 public class ChargingStationActivity extends AppCompatActivity {
+    /**
+     * Activity:
+     * Responsible for generating the individual pages displaying the information for each individual charging location
+     */
     FirebaseDatabase database = FirebaseDatabase.getInstance("https://ev-assistant-3d3e4-default-rtdb.europe-west1.firebasedatabase.app/");
     DatabaseReference ref = database.getReference("charging/stations");
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     Integer stationID;
+
+
+    // Define a variable for the "I'm here" button and total devices for the site.
+    // This allows it to be accessed in the ValueEventListener
     Integer total;
     ToggleButton hereBtn;
 
     ValueEventListener availableListener = new ValueEventListener() {
+        /**
+         * Listen for changes in the site's availability and send a notification if applicable
+         * @param snapshot
+         */
         @Override
         public void onDataChange(@NonNull DataSnapshot snapshot) {
             //only one thing needs to be actively checked and that's numAvailable
             int numAvailable = snapshot.getValue(Integer.class);
+
+            // get the relevant textView
             final TextView availableText = (TextView) findViewById(R.id.availableText);
+
+            // set it's text to the new number of available devices
             availableText.setText(Integer.toString(numAvailable));
 
-
+            // define variables for the notification title and text
             String notiTitle;
             String notiText;
             notiTitle = "Charging Update";
+
+            // if there are more than 0 available (ie 1 or more)
             if (numAvailable > 0){
+                // add a plural
                 String plural = "s";
                 if (numAvailable == 1) {
+                    // if it's exactly one then remove it
                     plural="";
                 }
+                // generate the notification text
                 notiText = numAvailable+" charger"+plural+" just became available!";
             } else {
+
+                // 0 chargers are available so show a different message
                 notiText = "There are now 0 chargers";
+
+                // set the here button to true (in development context: force the app to allow users to unblock it from 0 available)
                 hereBtn.setChecked(true);
             }
+
+            // create a notification builder to build the notification as desired
             NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "Availability")
                     .setSmallIcon(R.drawable.notification_icon)
                     .setContentTitle(notiTitle)
                     .setContentText(notiText)
                     .setPriority(NotificationCompat.PRIORITY_MAX);
 
-            // Create an Intent for the activity you want to start
+            // create an Intent for this activity with the stationID intact
             Intent resultIntent = new Intent(getApplicationContext(), ChargingStationActivity.class);
             resultIntent.putExtra("stationID",stationID);
-            // Create the TaskStackBuilder and add the intent, which inflates the back stack
+
+            // create a TaskStackBuilder
             TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
+
+            // add the intent
             stackBuilder.addNextIntentWithParentStack(resultIntent);
-            // Get the PendingIntent containing the entire back stack
+
+            // get the PendingIntent
             PendingIntent resultPendingIntent =
                     stackBuilder.getPendingIntent(0,
                             PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
 
+            // set the desired intent on the notification builder
             builder.setContentIntent(resultPendingIntent);
 
+            // set the origin as this class
             NotificationManagerCompat manCompat = NotificationManagerCompat.from(ChargingStationActivity.this);
+
+            // send the notification
             manCompat.notify(1,builder.build());
 
 
+            // DEV: additionally send a Toast with the ID
             Context context = getApplicationContext();
             CharSequence text = String.valueOf(numAvailable);
 
@@ -101,7 +137,7 @@ public class ChargingStationActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // Stop listening once we leave the app
+        // Stop listening once we leave the activity but keep listening onPause
         ref.child("numAvailable").removeEventListener(availableListener);
 
     }
@@ -151,20 +187,21 @@ public class ChargingStationActivity extends AppCompatActivity {
 
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        // if the toggle is pressed:
                             ref.child("numAvailable").addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     Integer number = snapshot.getValue(Integer.class);
+                                    // check if the toggle is checked
                                     if (isChecked) {
                                         if (number > 0) {
+                                            // if so and the number is more than 0, take away 1
                                             ref.child("numAvailable").setValue(snapshot.getValue(Integer.class)-1);
-                                        } else {
-
-
                                         }
                                     } else {
                                         if (number < total)
                                         {
+                                            // if not and the number is less than the total add 1
                                             ref.child("numAvailable").setValue(snapshot.getValue(Integer.class)+1);
                                         }
                                     }
@@ -187,10 +224,14 @@ public class ChargingStationActivity extends AppCompatActivity {
             }
         };
         if (user != null){
+            // if the user is logged in, add the user check
             ref.child("currentUsers").child(user.getUid()).addListenerForSingleValueEvent(eventListener);
         }
 
+        // add the availability listener defined earlier
         ref.child("numAvailable").addValueEventListener(availableListener);
+
+        // get all the initial data remaining to fill the page
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

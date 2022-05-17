@@ -12,7 +12,7 @@ public class TipContract {
     public static final String PATH_TIPS = "tips";
 
 
-    //This inner class represents the data structure of the weather_table
+    //Use inner class to define structure of TipsTable
     public static final class TipsTable implements BaseColumns {
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_TIPS).build();
 
@@ -21,7 +21,7 @@ public class TipContract {
 
         //Table Name
         public static final String TABLE_NAME = "TIPS_TABLE";
-        //Column Name
+        //Column Names
         public static final String COLUMN_TIP_NO = "TIP_NO";
         public static final String COLUMN_TIP_TITLE = "TIP_TITLE";
         public static final String COLUMN_TIP_CONTENT = "TIP_CONTENT";

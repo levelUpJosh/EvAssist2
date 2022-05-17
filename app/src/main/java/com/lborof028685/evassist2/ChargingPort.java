@@ -1,8 +1,12 @@
 package com.lborof028685.evassist2;
 
 public class ChargingPort {
-    // In EV chargers, one device may have more than one plug but allow only one output.
-    // Hence this class exists
+    /** In EV chargers, one device may have more than one plug but allow only one output.
+     * Hence this class exists to represent that
+     *
+     * Was intended to be used by ChargingDevice
+     */
+
     private double power; // in kw
     private String type; // eg CCS2/Chademo
 
